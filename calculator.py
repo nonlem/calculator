@@ -179,26 +179,35 @@ class ExpressionParser:
         return expression[index] in self._SYMBOLS
 
 
-def expressionParenthesisParser(expression: str) -> int:
+class UserInput:
+    def get_input(self) -> str:
+        while True:
+            pass
+
+    def all_clear(self) -> None:
+        pass
+
+
+def expression_parenthesis_parser(expression: str) -> int:
     expression_parser = ExpressionParser()
     return expression_parser.process(expression)
 
 
 # テストケース
-result1 = expressionParenthesisParser("2+4*6")
-result2 = expressionParenthesisParser("2*3+4")
-result3 = expressionParenthesisParser("3-3+3")
-result4 = expressionParenthesisParser("2+2+2")
-result5 = expressionParenthesisParser("1-1-1")
-result6 = expressionParenthesisParser("3*3/3*3*3")
-result7 = expressionParenthesisParser("42")
-result8 = expressionParenthesisParser("7*3622*636*2910*183+343/2926/1026")
-result9 = expressionParenthesisParser("(2*3)+(1+2)")
-result10 = expressionParenthesisParser("4/(486-484)")
-result11 = expressionParenthesisParser("(1+(2+3+4)-3)+(9+5)")
-result12 = expressionParenthesisParser("(100+300)*5+(20-10)/10")
-result13 = expressionParenthesisParser("(100+200)/3*100+1000/10")
-result14 = expressionParenthesisParser("(-100+200)*(-300+400)")
+result1 = expression_parenthesis_parser("2+4*6")
+result2 = expression_parenthesis_parser("2*3+4")
+result3 = expression_parenthesis_parser("3-3+3")
+result4 = expression_parenthesis_parser("2+2+2")
+result5 = expression_parenthesis_parser("1-1-1")
+result6 = expression_parenthesis_parser("3*3/3*3*3")
+result7 = expression_parenthesis_parser("42")
+result8 = expression_parenthesis_parser("7*3622*636*2910*183+343/2926/1026")
+result9 = expression_parenthesis_parser("(2*3)+(1+2)")
+result10 = expression_parenthesis_parser("4/(486-484)")
+result11 = expression_parenthesis_parser("(1+(2+3+4)-3)+(9+5)")
+result12 = expression_parenthesis_parser("(100+300)*5+(20-10)/10")
+result13 = expression_parenthesis_parser("(100+200)/3*100+1000/10")
+result14 = expression_parenthesis_parser("(-100+200)*(-300+400)")
 
 print(result1)  # --> 26
 print(result2)  # --> 10
