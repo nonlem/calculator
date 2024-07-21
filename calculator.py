@@ -1,10 +1,8 @@
 from typing import Optional, TypeVar, Generic
 
-# 型変数 T を定義
 T = TypeVar("T")
 
 
-# Node クラスの定義
 class Node(Generic[T]):
     def __init__(self, data: T) -> None:
         # ノードのデータ部分
@@ -13,10 +11,8 @@ class Node(Generic[T]):
         self.next: Optional["Node[T]"] = None
 
 
-# スタッククラスの定義
 class Stack(Generic[T]):
     def __init__(self) -> None:
-        # スタックの先頭ノード（初期値は None）
         self.head: Optional[Node[T]] = None
 
     # データをスタックにプッシュするメソッド
@@ -73,12 +69,9 @@ class ExpressionParser:
     }
 
     def __init__(self) -> None:
-        # オペランドスタックを初期化（整数用）
         self._operand_stack = Stack[int]()
-        # オペレータースタックを初期化（文字列用）
         self._operator_stack = Stack[str]()
 
-    # 式を解析して結果を返すメソッド
     def process(self, expression: str) -> int:
         ref = len(expression)
 
@@ -124,7 +117,6 @@ class ExpressionParser:
             raise ValueError("result is None.")
         return result
 
-    # 演算を実行するメソッド
     def _operate(self) -> None:
         left_operand = self._operand_stack.pop()
         right_operand = self._operand_stack.pop()
@@ -138,7 +130,6 @@ class ExpressionParser:
 
         self._operand_stack.push(self._calculate(left_operand, right_operand, operator))
 
-    # 実際の計算を行うメソッド
     def _calculate(self, left_operand: int, right_operand: int, operator: str) -> int:
         if operator == "+":
             return left_operand + right_operand
@@ -150,15 +141,14 @@ class ExpressionParser:
             raise ValueError("right must not be zero")
         return int(left_operand / right_operand)
 
-    # 指定位置がオペレーターかどうかを判定するメソッド
     def _is_operator(self, expression: str, index: int) -> bool:
         return (
-            index != 0
+            0 < index < len(expression) - 1
             and expression[index] in self._OPERATORS
             and expression[index - 1] not in self._OPERATORS
+            and expression[index - 1] != self._LEFT_BRACKET
         )
 
-    # 指定位置が符号かどうかを判定するメソッド
     def _is_sign(self, expression: str, index: int) -> bool:
         return (
             index < len(expression) - 1
@@ -167,29 +157,28 @@ class ExpressionParser:
                 expression[index] == self._PLUS_SYMBOL
                 or expression[index] == self._MINUS_SYMBOL
             )
-            and (index == 0 or expression[index - 1] in self._OPERATORS)
+            and (
+                index == 0
+                or expression[index - 1] in self._OPERATORS
+                or expression[index - 1] == self._LEFT_BRACKET
+            )
         )
 
-    # 指定位置が左括弧かどうかを判定するメソッド
     def _is_left_bracket(self, expression: str, index: int) -> bool:
         return expression[index] == self._LEFT_BRACKET
 
-    # 指定位置が右括弧かどうかを判定するメソッド
     def _is_right_bracket(self, expression: str, index: int) -> bool:
         return expression[index] == self._RIGHT_BRACKET
 
-    # 数字を切り取れるかどうかを判定するメソッド
     def _can_trim_num(self, expression: str, index: int) -> bool:
         return expression[index].isdecimal() and (
             index == 0 or not expression[index - 1].isdecimal()
         )
 
-    # 指定位置が記号かどうかを判定するメソッド
     def _is_symbol(self, expression: str, index: int) -> bool:
         return expression[index] in self._SYMBOLS
 
 
-# 式を解析して結果を返す関数
 def expressionParenthesisParser(expression: str) -> int:
     expression_parser = ExpressionParser()
     return expression_parser.process(expression)
@@ -209,8 +198,8 @@ result10 = expressionParenthesisParser("4/(486-484)")
 result11 = expressionParenthesisParser("(1+(2+3+4)-3)+(9+5)")
 result12 = expressionParenthesisParser("(100+300)*5+(20-10)/10")
 result13 = expressionParenthesisParser("(100+200)/3*100+1000/10")
+result14 = expressionParenthesisParser("(-100+200)*(-300+400)")
 
-# 結果を出力
 print(result1)  # --> 26
 print(result2)  # --> 10
 print(result3)  # --> 3
@@ -224,3 +213,4 @@ print(result10)  # --> 2
 print(result11)  # --> 21
 print(result12)  # --> 2001
 print(result13)  # --> 10100
+print(result14)
