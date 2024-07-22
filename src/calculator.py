@@ -9,7 +9,7 @@ def main():
     try:
         expression = user_input.get_input()
         result = expression_parser.process(expression)
-        print(f"The result of the expression is: {result}")
+        print(f"The result is: {result}")
     except Exception as e:
         print(f"An error occurred: {e}")
 
@@ -194,7 +194,7 @@ class UserInput:
             if user_input == "=":
                 break
             elif user_input.upper() == "C":
-                self.all_clear()
+                self.clear_all()
                 continue
             self.input_data.append(user_input)
             self.display_current_input()
@@ -203,7 +203,7 @@ class UserInput:
     def display_current_input(self) -> None:
         print(f"Current input: {''.join(self.input_data)}")
 
-    def all_clear(self) -> None:
+    def clear_all(self) -> None:
         self.input_data = []
         print("All input cleared.")
 
