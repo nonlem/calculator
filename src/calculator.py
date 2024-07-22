@@ -52,15 +52,17 @@ class ExpressionParser:
     _DIVIDE_SYMBOL = "/"
     _LEFT_BRACKET = "("
     _RIGHT_BRACKET = ")"
-    _SYMBOLS = {
-        _PLUS_SYMBOL,
-        _MINUS_SYMBOL,
-        _MULTIPLE_SYMBOL,
-        _DIVIDE_SYMBOL,
-        _LEFT_BRACKET,
-        _RIGHT_BRACKET,
-    }
-    _OPERATORS = {_PLUS_SYMBOL, _MINUS_SYMBOL, _MULTIPLE_SYMBOL, _DIVIDE_SYMBOL}
+    _SYMBOLS = set(
+        [
+            _PLUS_SYMBOL,
+            _MINUS_SYMBOL,
+            _MULTIPLE_SYMBOL,
+            _DIVIDE_SYMBOL,
+            _LEFT_BRACKET,
+            _RIGHT_BRACKET,
+        ]
+    )
+    _OPERATORS = set([_PLUS_SYMBOL, _MINUS_SYMBOL, _MULTIPLE_SYMBOL, _DIVIDE_SYMBOL])
     _OPERATOR_PRIORITIES = {
         _PLUS_SYMBOL: 1,
         _MINUS_SYMBOL: 1,
@@ -100,7 +102,8 @@ class ExpressionParser:
                 self._operator_stack.pop()
 
             elif self._is_right_bracket(expression, index):
-                self._operator_stack.push(expression[index])
+                right_bracket = expression[index]
+                self._operator_stack.push(right_bracket)
 
             elif self._can_trim_num(expression, index):
                 num = int(expression[index:ref])
@@ -154,7 +157,10 @@ class ExpressionParser:
         return (
             index < len(expression) - 1
             and expression[index + 1].isdecimal()
-            and expression[index] in {self._PLUS_SYMBOL, self._MINUS_SYMBOL}
+            and (
+                expression[index] == self._PLUS_SYMBOL
+                or expression[index] == self._MINUS_SYMBOL
+            )
             and (
                 index == 0
                 or expression[index - 1] in self._OPERATORS
