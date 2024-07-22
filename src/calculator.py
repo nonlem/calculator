@@ -3,9 +3,19 @@ from typing import Optional, TypeVar, Generic
 T = TypeVar("T")
 
 
+def main():
+    expression_parser = ExpressionParser()
+    user_input = UserInput()
+    try:
+        expression = user_input.get_input()
+        result = expression_parser.process(expression)
+        print(f"The result of the expression is: {result}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
 class Node(Generic[T]):
     def __init__(self, data: T) -> None:
-        # ノードのデータ部分
         self.data = data
         # 次のノードへのポインタ（初期値は None）
         self.next: Optional["Node[T]"] = None
@@ -17,11 +27,8 @@ class Stack(Generic[T]):
 
     # データをスタックにプッシュするメソッド
     def push(self, data: T) -> None:
-        # 新しいノードを作成
         new_head = Node[T](data)
-        # 新しいノードの next を現在の先頭に設定
         new_head.next = self.head
-        # 先頭ノードを新しいノードに更新
         self.head = new_head
 
     # スタックの先頭データを参照するメソッド
@@ -33,16 +40,12 @@ class Stack(Generic[T]):
     # スタックからデータをポップするメソッド
     def pop(self) -> Optional[T]:
         if self.head is not None:
-            # 先頭ノードを一時保存
             temp = self.head
-            # 先頭ノードを次のノードに更新
             self.head = self.head.next
-            # 先頭ノードのデータを返す
             return temp.data
         return None
 
 
-# 式解析クラスの定義
 class ExpressionParser:
     _PLUS_SYMBOL = "+"
     _MINUS_SYMBOL = "-"
@@ -131,11 +134,11 @@ class ExpressionParser:
         self._operand_stack.push(self._calculate(left_operand, right_operand, operator))
 
     def _calculate(self, left_operand: int, right_operand: int, operator: str) -> int:
-        if operator == "+":
+        if operator == self._PLUS_SYMBOL:
             return left_operand + right_operand
-        elif operator == "-":
+        elif operator == self._MINUS_SYMBOL:
             return left_operand - right_operand
-        elif operator == "*":
+        elif operator == self._MULTIPLE_SYMBOL:
             return left_operand * right_operand
         if right_operand == 0:
             raise ValueError("right must not be zero")
@@ -180,46 +183,30 @@ class ExpressionParser:
 
 
 class UserInput:
+    def __init__(self) -> None:
+        self.input_data = []
+
     def get_input(self) -> str:
         while True:
-            pass
+            user_input = input(
+                "Enter a character (enter '=' to calculate, 'C' to clear): "
+            )
+            if user_input == "=":
+                break
+            elif user_input.upper() == "C":
+                self.all_clear()
+                continue
+            self.input_data.append(user_input)
+            self.display_current_input()
+        return "".join(self.input_data)
+
+    def display_current_input(self) -> None:
+        print(f"Current input: {''.join(self.input_data)}")
 
     def all_clear(self) -> None:
-        pass
+        self.input_data = []
+        print("All input cleared.")
 
 
-def expression_parenthesis_parser(expression: str) -> int:
-    expression_parser = ExpressionParser()
-    return expression_parser.process(expression)
-
-
-# テストケース
-result1 = expression_parenthesis_parser("2+4*6")
-result2 = expression_parenthesis_parser("2*3+4")
-result3 = expression_parenthesis_parser("3-3+3")
-result4 = expression_parenthesis_parser("2+2+2")
-result5 = expression_parenthesis_parser("1-1-1")
-result6 = expression_parenthesis_parser("3*3/3*3*3")
-result7 = expression_parenthesis_parser("42")
-result8 = expression_parenthesis_parser("7*3622*636*2910*183+343/2926/1026")
-result9 = expression_parenthesis_parser("(2*3)+(1+2)")
-result10 = expression_parenthesis_parser("4/(486-484)")
-result11 = expression_parenthesis_parser("(1+(2+3+4)-3)+(9+5)")
-result12 = expression_parenthesis_parser("(100+300)*5+(20-10)/10")
-result13 = expression_parenthesis_parser("(100+200)/3*100+1000/10")
-result14 = expression_parenthesis_parser("(-100+200)*(-300+400)")
-
-print(result1)  # --> 26
-print(result2)  # --> 10
-print(result3)  # --> 3
-print(result4)  # --> 6
-print(result5)  # --> -1
-print(result6)  # --> 27
-print(result7)  # --> 42
-print(result8)  # --> 8587122934320
-print(result9)  # --> 9
-print(result10)  # --> 2
-print(result11)  # --> 21
-print(result12)  # --> 2001
-print(result13)  # --> 10100
-print(result14)
+if __name__ == "__main__":
+    main()
