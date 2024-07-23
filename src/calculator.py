@@ -100,8 +100,7 @@ class ExpressionParser:
                 while self._operator_stack.peek() != self._RIGHT_BRACKET:
                     self._operate()
                 self._operator_stack.pop()
-                left_character = self._operand_stack.peek()
-                if left_character not in self._SYMBOLS and left_character is not None:
+                if expression[index - 1] not in self._OPERATORS and index != 0:
                     self._operator_stack.push(self._MULTIPLE_SYMBOL)
 
             elif self._is_right_bracket(expression, index):
